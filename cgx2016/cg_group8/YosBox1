@@ -1,0 +1,31 @@
+IDEAL
+MODEL tiny
+CODESEG
+org 100h
+start:
+	stosw
+	push cs
+	pop es
+	mov di, ax
+	add di, offset exit
+	mov dx, 0cccch
+	mov ax,dx
+	mov cx, 300
+	int 86h
+	int 86h
+heavy:
+	mov [di],dx
+	add di, 3
+	dec cx
+	CMP cx, 00
+	JE heavy
+	jmp start1
+start1:
+	mov ax, 0CCCCh
+bomb:
+	mov [di], ax
+	add di, 645
+	jmp bomb
+exit:
+	db 512-(exit-start) dup (0cch)
+END start

@@ -1,0 +1,92 @@
+trap_value equ 0x3e57
+zombie_diff equ 0x300
+start_loc equ 9*zombie_diff
+jump_dist equ 10*zombie_diff
+
+start:
+	mov di, 0x2357
+	add ax, zombie_code
+	mov byte [di], 0xba
+	mov [di+1],ax 
+	mov word [di+3], 0xe2ff
+	mov bx, 0x43b7
+	cmp word [bx], 0xcccc
+	jz load_code_to_es
+	mov [bx], di
+	nop
+	
+	mov cx, 0x7
+loopdie:
+	sub bx, 0x10
+	nop
+	nop
+	nop
+	nop
+	mov [bx] , di 
+	nop
+	loop loopdie
+	
+load_code_to_es:
+	mov si, 0xa5ab	;stosw movsw
+	mov dx, 0xd429	;sub sp, dx
+	
+	sub ax, zombie_code-code_start
+	xchg si, ax
+	xor di, di
+	mov bp, si
+	int 86h
+	mov cl, (s_end-code_start)/2 + 1
+	rep movsw
+	
+;segment preps
+	;ss, es = cs (Arena), ds = es(Extra segment)
+	push cs
+	push es
+	push cs
+	mov [trap_value], bp
+	pop es
+	pop ds
+	pop ss
+	
+	;jump to shooting
+	mov ax, 0xa552	;ax = push dx , movsw
+	xor si, si
+	add bp,  0x100
+	mov di, bp
+	mov sp, bp
+	mov dx, trap_value
+	movsb
+	jmp bp
+	
+code_start:
+	movsw
+	movsw
+	mov cl, (cont_end - cont_al)/2
+	movsw
+	movsw
+	rep movsw
+cont_al:
+	xor si, si
+	;add bp, trap_value
+	;mov di, bp
+	add di, jump_dist
+	mov bp, di
+	movsb
+	jmp bp
+cont_end:
+s_end:
+	
+zombie_code:
+	mov di, 0x100+zombie_diff
+	add di, dx
+	mov ax, 0xcccc
+z_loop:
+	;jmp z_loop
+	cmp word [trap_value], ax
+	jz z_loop
+	times 0x15 nop
+rep_z:
+	mov cx, 5*0x40+14
+	rep stosw
+	add di, jump_dist
+	jmp rep_z

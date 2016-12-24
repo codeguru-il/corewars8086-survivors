@@ -1,0 +1,47 @@
+trap_value equ 0x3e57
+start_loc equ 0x00
+zombie_diff equ 0x300
+jump_dist equ 10*zombie_diff
+
+start:
+	mov ax, 0x2357
+	push cs
+	pop ss
+	mov sp, 0x43bA ; Push will write to 0x4349, 0x4348
+	mov bx, 0x43b7
+	mov bp, ax
+	mov si, [0x2358]
+	push word [bx] 
+	pop word [bx-1] 
+	mov [bx], bp
+	
+	mov cx, 0x7
+loopdie:
+	mov word [bp+3], 0xe2ff
+	sub sp, 0x10
+	sub bx, 0x10
+	add word [si+1], zombie_diff
+	push word [bx]
+	pop word [bx-1]
+	mov [bx], bp
+	loop loopdie
+
+;segment preps
+	;es = cs (Arena), ds = es(Extra segment)
+	push cs
+	push es
+	mov [trap_value], bp
+	pop ds
+	pop es
+
+	;jump to shooting
+	mov bp, si
+	mov ax, 0xa552	;ax = push dx , movsw
+	mov sp, 0x50
+	xor si, si
+	add bp, 0x100+zombie_diff
+	mov di, bp
+	mov sp, bp
+	mov dx, trap_value
+	movsb
+	jmp bp

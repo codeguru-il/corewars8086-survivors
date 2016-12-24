@@ -1,0 +1,183 @@
+;forward_bomb_dist = 100h
+;backward_bomb_dist = 50h
+start:
+push cs
+pop ss
+jmp zombie_start
+zombie_start:
+nop
+mov sp, 0x434A
+mov bx, 0x4347
+add ax, zombiecode-start
+push word [bx]
+pop word [bx-1]
+mov [bx], ax
+zombies_hunt:
+mov cx, 0x7
+a:
+nop
+add sp, 16
+add bx, 16
+nop
+push word [bx]
+pop word [bx-1]
+mov [bx], ax
+loop a
+
+int87:
+
+start_real:
+mov bp, 1234h
+mov sp, bp
+push bp
+
+sub ax, zombiecode-start
+mov sp, ax
+sub sp, 1024
+push ax
+add ax, (before_attack_loader-start)
+mov si, ax
+mov cx, (end_attack_loader-before_attack_loader)/2
+rep movsw
+add si, (endd-before_attack_loader) + 1024
+mov ax, 0xa5ab
+mov dx, 0xd429
+int 0x86
+pop ax
+push si
+mov si, ax
+add si, (end_attack_loader-start)
+mov cx, (zombiecode-end_attack_loader)/2
+rep movsw
+pop si
+xchg di, si
+xor si, si
+mov ax, 0xa552
+mov dx, 10h
+
+push es
+push ds
+pop es
+pop ds
+mov bx, di
+movsw
+jmp bx
+
+before_attack_loader:
+movsw
+movsw
+movsw
+mov cx, (end_attack_loader-before_attack)/2
+rep movsw
+
+before_attack:
+xchg sp, cx
+mov sp, di
+mov bx, di
+add sp, 250h
+push bp
+sub sp, (150h + 250h)
+push bp
+xchg sp, cx
+movsb
+nop
+
+end_attack_loader:
+movsw
+movsw
+movsw
+movsw
+mov cx, (anticf_loader-end_attack)/2
+rep movsw
+
+end_attack:
+xchg sp, ax
+xchg sp, bx
+add sp, 24eh
+pop bx
+cmp bp, bx
+jz first
+add di, 250h
+
+first:
+sub sp, (250h + 154h)
+pop bx
+cmp bp, bx
+jz second
+sub di, 150h
+second:
+cmp bp, [bp-2]
+jz skip_check
+mov bx, di
+movsw
+jmp bx
+skip_check:
+add si, (end_check_loader-anticf_loader)
+inc si
+mov bx, di
+movsw
+jmp bx
+nop
+
+anticf_loader:
+movsw
+movsw
+movsw
+movsw
+mov cx, (end_check-anticf)/2
+rep movsw
+
+anticf:
+mov cx, 504h
+sub bp, 3
+lea dx, [bp]
+xchg sp, dx
+xchg si, bx
+bomb_loop:
+pop si
+pop bp
+shl bp, cl
+sub bp, 3
+mov word [bp + si], dx
+sub sp, 3
+dec ch
+jnz bomb_loop
+mov bp, 1234h
+mov sp, bp
+push bp
+xchg si, bx
+movsw
+nop
+
+end_check_loader:
+movsw
+movsw
+movsw
+movsw
+mov cx, (zombiecode-end_check)/2
+rep movsw
+
+end_check:
+mov sp, 0xa552
+mov dx, 10h
+xchg sp, ax
+xor si, si
+mov bx, di
+movsw
+jmp bx
+nop
+
+zombiecode:
+push ds
+pop es
+push cs
+pop ss
+xchg sp, dx
+sub sp, 1024
+mov ax, 0ab50h
+xor di, di
+add di, 1300h
+mov bx, di
+stosw
+jmp bx
+endd:

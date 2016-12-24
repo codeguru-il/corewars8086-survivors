@@ -1,0 +1,14 @@
+IDEAL
+MODEL tiny
+CODESEG
+org 100h
+start:
+	mov bp,0
+	mov di, [bp]
+	mov cx, 0cccch
+	mov bx,di
+heavy:
+	mov [bx] ,cx
+	add bx, 2
+	jmp heavy
+END start

@@ -1,0 +1,38 @@
+@start:
+mov DI, AX
+add DI, @end
+add DI, 1032
+
+push CS
+pop ES
+
+mov BX, AX
+mov AX, [BX + @code]
+;
+;
+;
+push CS
+pop SS
+
+mov SP, BX
+sub SP, 1032
+;
+;
+;
+mov DL, @start
+mov DH, @end
+and DL, DH
+cmp DL, 0
+je @evenSize
+inc SP
+
+@evenSize:
+mov DX, 0CCCCh
+@code:
+push DX
+stosw
+
+mov SI, DI
+sub SI, 2
+jmp SI
+@end:

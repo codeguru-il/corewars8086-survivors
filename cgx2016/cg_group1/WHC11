@@ -1,0 +1,26 @@
+IDEAL
+MODEL tiny
+CODESEG
+org	100h
+start:
+    ;mov [word 106h],07b8h
+	;mov [byte 108h],00
+	;mov [word 109h],0ccb9h
+	;mov [byte 111h],00
+	;mov [word 112h],87cdh
+	add ax, call_far-start
+	push es
+	pop ds
+    mov dx, 0cccch
+	mov bx,50h
+	mov [bx+2],cs
+	mov [bx],ax
+	push cs
+	pop ss
+	mov sp,ax
+call_far:
+	call [dword bx]
+exit:
+	db 512-(exit-start) dup (0cch)
+END start
+

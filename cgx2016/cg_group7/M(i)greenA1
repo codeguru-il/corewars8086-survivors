@@ -1,0 +1,29 @@
+start:
+	push ss
+	pop bp
+	push cs
+	pop ss
+	mov sp, 0x43ba
+	mov bx, 0x43b7
+	add ax, zombie-start
+	push word [bx]
+	pop word [bx-1]
+	mov [bx], ax
+	mov cl, 0x7
+loopy:
+	sub bx, 16
+	sub sp, 16
+	nop
+	nop
+	push word [bx]
+	pop word [bx-1]
+	mov [bx], ax
+	loop loopy
+	push cs
+	pop es
+zombie:
+	mov di,ax
+	mov bx, 0xcccc
+	mov ax,0xabab
+	stosw
+	jmp zombie

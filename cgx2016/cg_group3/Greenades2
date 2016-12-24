@@ -1,0 +1,47 @@
+start:
+push ax
+add ax, zombiecode-start
+nop
+nop
+nop
+mov bx, 0x4347
+cmp word [bx], 0xCCCC
+jz continue
+mov [bx], ax
+zombies_hunt:
+mov cx, 0x7
+nop
+a:
+nop
+add bx, 16
+nop
+nop
+nop
+mov [bx], ax
+nop
+loop a
+continue:
+pop ax
+push ds
+pop es
+push cs
+pop ss
+mov di, ax
+xchg sp, ax
+mov ax, 0ab50h
+add di,zombiecode-start
+stosw
+zombiecode:
+push ds
+pop es
+push cs
+pop ss
+xchg sp, dx
+sub sp, 1024
+mov ax, 0ab50h
+xor di, di
+add di, 1300h
+mov bx, di
+stosw
+jmp bx
+endd:
