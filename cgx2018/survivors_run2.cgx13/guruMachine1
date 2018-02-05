@@ -1,0 +1,44 @@
+
+		IDEAL
+		
+                MODEL tiny
+                CODESEG
+                org 100h
+
+
+
+       
+             
+Start:
+        mov si, 0cccch
+        mov bx,0
+        jmp xx
+l2:     mov bx,0ffffh
+xx:     push ax
+        push cx
+        mov cx,512d
+        mov di,01000h
+l8:     mov [di],ax
+        inc ax
+        inc di
+        loop l8
+        pop cx
+        pop ax
+L1:     mov [bx],si
+        add bx, 14h
+        cmp bx,ax
+        ja l2
+        loop l1
+        
+l3:     mov [bx],si
+        sub bx,14h
+        add ax, 512
+        cmp bx, ax
+        sub ax, 512
+        jb xx
+        loop l3
+
+    
+
+Exit:
+        END start

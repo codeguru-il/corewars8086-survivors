@@ -1,0 +1,23 @@
+;------------------------------------------
+; PURPOSE   : Test number 1 
+; SYSTEM    : Turbo Assembler Ideal Mode  
+; AUTHOR    :  Yaniv Groisman
+; ASSUMING  :   
+;------------------------------------------
+
+		IDEAL
+		
+		MODEL tiny
+		CODESEG
+		org 100h
+		
+Start:
+		mov cx,0CCCCh
+		mov bx,0
+l1: 	mov [bx],cx
+		add bx,14h
+		cmp bx,ax
+		jb l1
+
+Exit:
+x                END start
