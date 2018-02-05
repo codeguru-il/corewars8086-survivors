@@ -1,0 +1,32 @@
+IDEAL
+MODEL tiny
+CODESEG
+org 100h
+	db 256 dup (0cch)
+start:
+	mov cx,0ccch
+	xor bx,bx
+	mov dx, ax
+	add dx, (exit-start)
+loopi:
+	cmp bx,ax
+	ja lable
+	jmp totach
+lable:
+	cmp bx,dx
+	ja totach
+	jmp endd
+totach:
+	mov [bx],cx
+endd:
+	add bx,8
+	dec dx
+	jmp loopi
+; --------------------------
+; Your code here
+; --------------------------
+exit:
+	db 256-(exit-start) dup (0cch)
+END start
+
+

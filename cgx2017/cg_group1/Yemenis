@@ -1,0 +1,30 @@
+IDEAL
+MODEL tiny
+CODESEG
+org 100h
+	db 256 dup (0cch)
+start:
+	mov si,ax
+	push cs
+	pop es
+	mov ax,87cdh
+	mov cx,0cccch
+	mov bx,cx
+	int 87h
+	mov bx,si
+	add bx,offset exit
+	mov di,bx
+	mov dx,0cccch
+	mov ax,dx
+	int 86h
+	int 86h
+	add bx,512h
+regular:
+	mov [bx],cx
+	add bx,8
+	jmp regular
+exit:
+	db 256-(exit-start)dup (0cch)
+END start
+
+
