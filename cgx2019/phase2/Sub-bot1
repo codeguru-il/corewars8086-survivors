@@ -1,0 +1,17 @@
+        IDEAL
+        MODEL tiny
+        CODESEG
+        org 100h
+Start:
+		mov di, ax
+		add di, offset(exit - start)
+		mov dx, 0cccch
+L1:
+		mov [word di], dx
+		add di, 11h
+		jmp L1
+
+exit:
+
+END start
+

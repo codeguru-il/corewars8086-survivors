@@ -1,0 +1,18 @@
+IDEAL
+MODEL tiny
+CODESEG
+org 100h
+start:
+    add ax,call_far-start
+    push es
+    pop ds
+    mov bx,78h
+    mov [bx+2],cs
+    mov [bx],ax
+    push cs
+    pop ss
+    mov sp,ax
+call_far:
+    call [dword bx]
+END start
+
