@@ -1,0 +1,8 @@
+ PUSH DS
+ POP ES
+ MOV DI, AX
+ MOV AX, 0xCCCC
+again:
+ STOSW
+ ADD WORD DI, 0xB
+ JMP again

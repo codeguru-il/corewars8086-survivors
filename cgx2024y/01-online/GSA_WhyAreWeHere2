@@ -1,0 +1,12 @@
+nop
+push ds
+pop ss
+mov sp,ax
+mov bx,ax
+add bx,head
+add ax,ip
+mov [bx],ax
+mov[bx+2],cs
+ip:
+call far[bx]
+head:
